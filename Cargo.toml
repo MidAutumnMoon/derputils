@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "whereisis"
-path = "./bin/whereisis.rs"
+name = "whereonearth"
+path = "./bin/whereonearth.rs"
 
 [profile.release]
 lto = true
