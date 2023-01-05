@@ -30,6 +30,7 @@
         lib.hexaShell pkgsForSystem [
           "rustc"
           "cargo"
+          "clippy"
           "rust-analyzer"
           "clang_14"
         ];
