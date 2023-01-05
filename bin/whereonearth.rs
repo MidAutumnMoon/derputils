@@ -12,14 +12,14 @@ use anyhow::{
 
 /// Lookup `target` inside `path`, follow symlink recursively.
 #[inline]
-fn lookup( target: &str, path: &PathBuf ) -> Option<String> {
+fn lookup( target: &str, path: &str ) -> Option<String> {
 
-    let mut path = path.to_owned();
+    let mut path = PathBuf::from( path );
 
     path.push( target );
 
     match path.canonicalize() {
-        Ok( full_path ) => Some( full_path.to_string_lossy().into_owned() ),
+        Ok( full_path ) => Some( full_path.to_string_lossy().to_string() ),
         Err( _ ) => None
     }
 
@@ -34,26 +34,23 @@ fn main() -> Result<()> {
 
     let self_name =
         self_name.file_name()
-        .ok_or( anyhow!( "Failed getting name of current executable." ) )?
+        .ok_or_else( || anyhow!( "Failed getting name of current executable." ) )?
         .to_string_lossy();
 
 
     let target_program =
         env::args()
         .nth( 1 )
-        .ok_or( anyhow!( "{self_name}: [program name]" ) )?;
+        .ok_or_else( || anyhow!( "{self_name}: [program name]" ) )?;
 
 
-    let paths =
-        env::var( "PATH" )
-        .context( "Failed reading $PATH" )?;
+    let env_path =
+        env::var( "PATH" ).context( "Failed reading $PATH" )?;
 
-    let paths =
-        paths.rsplit( ":" );
-
-    for path in paths {
+    for path in env_path.rsplit( ':' ) {
         let lookup_result =
-            lookup( &target_program, &PathBuf::from( path ) );
+            lookup( &target_program, path );
+
         if let Some( full_path ) = lookup_result {
             println!( "{}", full_path );
             return Ok( () )
