@@ -3,10 +3,6 @@ name = "derputils"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "whereonearth"
-path = "./bin/whereonearth.rs"
-
 [profile.release]
 lto = true
 codegen-units = 2
