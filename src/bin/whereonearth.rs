@@ -1,7 +1,4 @@
-use std::{
-    env,
-    path::PathBuf,
-};
+const PROGRAM_NAME: &str = "whereonearth";
 
 use anyhow::{
     anyhow,
@@ -13,6 +10,8 @@ use anyhow::{
 /// Lookup `target` inside `path`, follow symlink recursively.
 #[inline]
 fn lookup( target: &str, path: &str ) -> Option<String> {
+
+    use std::path::PathBuf;
 
     let mut path = PathBuf::from( path );
 
@@ -28,20 +27,12 @@ fn lookup( target: &str, path: &str ) -> Option<String> {
 
 fn main() -> Result<()> {
 
-    let self_name =
-        env::current_exe()
-        .context( "Failed getting path of current executable." )?;
-
-    let self_name =
-        self_name.file_name()
-        .ok_or_else( || anyhow!( "Failed getting name of current executable." ) )?
-        .to_string_lossy();
-
+    use std::env;
 
     let target_program =
         env::args()
         .nth( 1 )
-        .ok_or_else( || anyhow!( "{self_name}: [program name]" ) )?;
+        .ok_or_else( || anyhow!( "{PROGRAM_NAME}: [program name]" ) )?;
 
 
     let env_path =
