@@ -21,7 +21,7 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@v15
+        uses: DeterminateSystems/update-flake-lock@v16
         with:
           pr-title: "flake: update [bot]"
           commit-msg: "flake: update [bot]"
