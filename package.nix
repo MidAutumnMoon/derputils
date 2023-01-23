@@ -1,11 +1,10 @@
-{ lib, rustPlatform }:
+with import <nixpkgs> {};
 
 rustPlatform.buildRustPackage {
 
   pname = "derputils";
 
-  version =
-    lib.readVersionCargo ./Cargo.toml;
+  version = "dev";
 
   src = lib.cleanSource ./.;
 
