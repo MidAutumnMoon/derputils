@@ -3,11 +3,13 @@
   inputs = {
       nixpkgs.url =
         "github:NixOS/nixpkgs/nixos-unstable-small";
+      nuclage.url =
+        "github:MidAutumnMoon/Nuclage";
       nulib.url =
         "github:MidAutumnMoon/Nulib";
     };
 
-  outputs = { self, nixpkgs, nulib, ... }:
+  outputs = { self, nixpkgs, nulib, nuclage, ... }:
 
     let
 
@@ -16,15 +18,10 @@
       pkgsForSystem =
         lib.importNixpkgs {
           inherit nixpkgs;
-          overlays = lib.attrValues self.overlays;
+          overlays = nuclage.totalOverlays;
         };
 
     in {
-
-      overlays.default = final: prev: {
-          derputils =
-            final.callPackage ./package.nix { inherit lib; };
-        };
 
       devShells =
         lib.hexaShell pkgsForSystem [
@@ -32,10 +29,12 @@
           "cargo"
           "clippy"
           "rust-analyzer"
-          "clang_14"
+          "latestClangStdenv.cc"
         ];
 
-      packages = pkgsForSystem ( p: p.derputils );
+      packages = pkgsForSystem ( p:
+        p.callPackage ./package.nix { inherit lib; }
+      );
 
     };
 
