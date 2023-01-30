@@ -4,7 +4,7 @@ use std::env;
 use std::path::PathBuf;
 
 use anyhow::{
-    anyhow,
+    bail,
     Context,
     Result,
 };
@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     let target_program =
         env::args()
         .nth( 1 )
-        .ok_or_else( || anyhow!( "{PROGRAM_NAME}: [program name]" ) )?;
+        .with_context( || format!( "{PROGRAM_NAME}: [program name]" ) )?;
 
     let env_path =
         env::var( "PATH" ).context( "Failed reading $PATH" )?;
@@ -35,6 +35,6 @@ fn main() -> Result<()> {
     }
 
 
-    Err( anyhow!( "Program \"{target_program}\" not found while iterating $PATH" ) )
+    bail!( "Program \"{target_program}\" not found while iterating $PATH" )
 
 }
