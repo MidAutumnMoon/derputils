@@ -100,6 +100,11 @@ fn main() -> Result<()> {
 
     use std::fs::OpenOptions;
 
+    use rustix::fs::{
+        fadvise,
+        Advice
+    };
+
     let output = match cmd_options.output {
         Output::Stdout => PathBuf::from( "/dev/stdout" ),
         Output::File( path ) => path
@@ -120,6 +125,8 @@ fn main() -> Result<()> {
             .read( true )
             .open( &input )
             .with_context( || format!( "Failed opening \"{}\" to read", &input.display() ) )?;
+
+        fadvise( &open_input, 0, 0, Advice::Sequential )?;
 
         std::io::copy( &mut open_input, &mut open_output )
             .with_context( || format!( "Error occurred copying \"{}\"", &input.display() ) )?;

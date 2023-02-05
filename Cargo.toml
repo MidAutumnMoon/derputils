@@ -12,3 +12,4 @@ strip = true
 
 [dependencies]
 anyhow = "1.0.68"
+rustix = { version = "0.36.8", features = [ "fs" ] }
