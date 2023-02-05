@@ -1,4 +1,10 @@
+#[ allow( dead_code ) ]
 const PROGRAM_NAME: &str = "whereonearth";
+
+#[ allow( dead_code ) ]
+const PROGRAM_USAGE: &str =
+    "whereonearth NAME";
+
 
 use std::env;
 use std::path::PathBuf;
@@ -15,7 +21,7 @@ fn main() -> Result<()> {
     let target_program =
         env::args()
         .nth( 1 )
-        .with_context( || format!( "{PROGRAM_NAME}: [program name]" ) )?;
+        .context( PROGRAM_USAGE )?;
 
     let env_path =
         env::var( "PATH" ).context( "Failed reading $PATH" )?;
@@ -28,7 +34,7 @@ fn main() -> Result<()> {
         path.push( &target_program );
 
         if let Ok( full_path ) = path.canonicalize() {
-            println!( "{}", full_path.to_string_lossy() );
+            println!( "{}", full_path.display() );
             return Ok( () )
         }
 
