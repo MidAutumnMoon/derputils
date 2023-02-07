@@ -28,8 +28,7 @@ struct CmdOptions {
 impl CmdOptions {
 
     fn from_env() -> Result<Self> {
-        let raw_options: Vec<String> =
-            env::args().skip( 1 ).collect();
+        let raw_options: Vec<String> = env::args().skip( 1 ).collect();
 
         if raw_options.len() < 2 {
             bail!( "Missing required options" )
@@ -40,10 +39,7 @@ impl CmdOptions {
 
         Ok( Self {
             output: PathBuf::from( output ),
-            inputs: inputs
-                .into_iter()
-                .map( PathBuf::from )
-                .collect()
+            inputs: inputs.iter().map( PathBuf::from ).collect()
         } )
     }
 
@@ -56,8 +52,7 @@ fn main() -> Result<()> {
     // Acquire command line options.
 
     let cmd_options =
-        CmdOptions::from_env()
-        .context( PROGRAM_USAGE )?;
+        CmdOptions::from_env().context( PROGRAM_USAGE )?;
 
     let output = cmd_options.output;
 
@@ -84,9 +79,7 @@ fn main() -> Result<()> {
         .create( true )
         .truncate( true )
         .open( &output )
-        .with_context( || {
-            format!( "Failed opening \"{}\" to write", &output.display() )
-        } )?;
+        .with_context( || format!( "Failed opening \"{}\" to write", &output.display() ) )?;
 
     for input in cmd_options.inputs {
 

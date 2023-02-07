@@ -19,9 +19,7 @@ use anyhow::{
 fn main() -> Result<()> {
 
     let target_program =
-        env::args()
-        .nth( 1 )
-        .context( PROGRAM_USAGE )?;
+        env::args().nth( 1 ).context( PROGRAM_USAGE )?;
 
     let env_path =
         env::var( "PATH" ).context( "Failed reading $PATH" )?;
