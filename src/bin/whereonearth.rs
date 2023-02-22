@@ -1,11 +1,3 @@
-#[ allow( dead_code ) ]
-const PROGRAM_NAME: &str = "whereonearth";
-
-#[ allow( dead_code ) ]
-const PROGRAM_USAGE: &str =
-    "whereonearth NAME";
-
-
 use std::env;
 use std::path::PathBuf;
 
@@ -16,22 +8,30 @@ use anyhow::{
 };
 
 
+/// Find executable <name> in $PATH, with following the symlink
+/// to reveal its true location.
+#[ derive( argh::FromArgs, Debug ) ]
+struct CmdOptions {
+    /// find the executable with this name
+    #[ argh( positional ) ]
+    name: String
+}
+
+
 fn main() -> Result<()> {
 
-    let target_program =
-        env::args().nth( 1 ).context( PROGRAM_USAGE )?;
+    let cmd_options: CmdOptions = argh::from_env();
 
-    let env_path =
+    let envvar_path =
         env::var( "PATH" ).context( "Failed reading $PATH" )?;
 
+    for location in envvar_path.rsplit( ':' ) {
 
-    for path in env_path.rsplit( ':' ) {
+        let mut location = PathBuf::from( location );
 
-        let mut path = PathBuf::from( path );
+        location.push( &cmd_options.name );
 
-        path.push( &target_program );
-
-        if let Ok( full_path ) = path.canonicalize() {
+        if let Ok( full_path ) = location.canonicalize() {
             println!( "{}", full_path.display() );
             return Ok( () )
         }
@@ -39,6 +39,6 @@ fn main() -> Result<()> {
     }
 
 
-    bail!( "Program \"{target_program}\" not found while iterating $PATH" )
+    bail!( "Program \"{}\" not found while iterating $PATH", &cmd_options.name )
 
 }
