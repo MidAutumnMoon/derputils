@@ -8,8 +8,8 @@ use anyhow::{
 
 
 
-/// Dump contents of all <input>-s into <output> without
-/// piping through shell.
+/// Dump contents of all "input" into "output" without
+/// piping through a shell.
 #[ derive( argh::FromArgs, Debug ) ]
 struct CmdOptions {
 

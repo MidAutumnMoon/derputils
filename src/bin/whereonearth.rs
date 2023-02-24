@@ -8,7 +8,7 @@ use anyhow::{
 };
 
 
-/// Find executable <name> in $PATH, with following the symlink
+/// Find executable "name" in $PATH, following the symlink
 /// to reveal its true location.
 #[ derive( argh::FromArgs, Debug ) ]
 struct CmdOptions {
