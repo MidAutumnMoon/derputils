@@ -1,6 +1,6 @@
 [package]
 name = "derputils"
-version = "0.3.0"
+version = "0.3.1"
 authors = [ "MidAutumnMoon <me@418.im>" ]
 edition = "2021"
 
