@@ -1,5 +1,9 @@
 use std::env;
-use std::path::PathBuf;
+
+use std::path::{
+    Path,
+    PathBuf,
+};
 
 use anyhow::{
     bail,
@@ -18,27 +22,48 @@ struct CmdOptions {
 }
 
 
+fn is_executable( path: &Path ) -> Result<bool> {
+    use std::os::unix::fs::PermissionsExt;
+    let metadata = path.metadata()?;
+    let permission = metadata.permissions();
+    Ok(
+        metadata.is_file()
+        && permission.mode() & 0o111 != 0
+    )
+}
+
+
 fn main() -> Result<()> {
 
-    let cmd_options: CmdOptions = argh::from_env();
+    let cmd_opts: CmdOptions = argh::from_env();
 
     let envvar_path =
         env::var( "PATH" ).context( "Failed reading $PATH" )?;
+
 
     for location in envvar_path.rsplit( ':' ) {
 
         let mut location = PathBuf::from( location );
 
-        location.push( &cmd_options.name );
+        location.push( &cmd_opts.name );
 
-        if let Ok( full_path ) = location.canonicalize() {
-            println!( "{}", full_path.display() );
-            return Ok( () )
+        let full_path = match location.canonicalize() {
+            Ok( p ) => p,
+            Err(_) => continue,
+        };
+
+        match is_executable( &full_path ) {
+            Ok( true ) => {
+                println!( "{}", &full_path.display() );
+                return Ok(())
+            },
+            Ok( false ) => continue,
+            Err(_) => continue,
         }
 
     }
 
 
-    bail!( "Program \"{}\" not found while iterating $PATH", &cmd_options.name )
+    bail!( "Program \"{}\" not found while iterating $PATH", &cmd_opts.name )
 
 }
