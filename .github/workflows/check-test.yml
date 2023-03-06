@@ -1,0 +1,24 @@
+name: "cargo check & test"
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  check:
+    name: "cargo check"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo check
+
+  test:
+    name: "cargo test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --all-features
